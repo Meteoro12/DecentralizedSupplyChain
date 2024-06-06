@@ -7,12 +7,14 @@ const CONTRACT_ADDRESS = process.env.REACT_APP_CONTRACT_ADDRESS;
 const WEB3_PROVIDER_URL = process.env.REACT_APP_WEB3_PROVIDER_URL;
 
 const web3 = new Web3(new Web3.providers.HttpProvider(WEB3_PROVIDER_URL));
+
 const supplyChainContract = new web3.eth.Contract(supplyChainABI.abi, CONTRACT_ADDRESS);
 
 async function authenticateUser(username, password) {
   try {
     const response = await axios.post(`${API_BASE_URL}/auth/login`, { username, password });
     localStorage.setItem('token', response.data.token);
+    console.log("Authentication successful");
     return response.data;
   } catch (error) {
     console.error("Authentication failed", error);
@@ -64,13 +66,18 @@ function displayProductStatus(productId) {
 }
 
 function init() {
-  document.getElementById("loginButton").addEventListener("click", () => {
-    const username = document.getElementById("username").value;
-    const password = document.getElementById("password").value;
-    authenticateUser(username, password)
-      .then((data) => console.log("Logged in successfully", data))
-      .catch((error) => console.log("Login error", error));
-  });
+  const loginButton = document.getElementById("loginButton");
+  if (loginButton) {
+    loginButton.addEventListener("click", () => {
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+      authenticateUser(username, password)
+        .then(data => console.log("Logged in successfully", data))
+        .catch(error => console.error("Login error", error));
+    });
+  } else {
+    console.error('Login button not found');
+  }
 }
 
 init();
