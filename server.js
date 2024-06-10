@@ -51,6 +51,34 @@ app.post('/api/shipments', (req, res) => {
     res.status(201).json(newShipment);
 });
 
+app.post('/api/batch/products', (req, res) => {
+    const productsToAdd = req.body.products;
+    productsToAdd.forEach(product => {
+        const newProduct = {
+            id: products.length + 1,
+            name: product.name,
+            category: product.category,
+            quantity: product.quantity
+        };
+        products.push(newProduct);
+    });
+    res.status(201).json({ message: "Products added successfully", addedCount: productsToAdd.length });
+});
+
+app.post('/api/batch/shipments', (req, res) => {
+    const shipmentsToAdd = req.body.shipments;
+    shipmentsToAdd.forEach(shipment => {
+        const newShipment = {
+            id: shipments.length + 1,
+            product_id: shipment.product_id,
+            quantity: shipment.quantity,
+            destination: shipment.destination
+        };
+        shipments.push(newShipment);
+    });
+    res.status(201).json({ message: "Shipments added successfully", addedCount: shipmentsToAdd.length });
+});
+
 app.use((req, res, next) => {
     res.status(404).send('Endpoint not found!');
 });
