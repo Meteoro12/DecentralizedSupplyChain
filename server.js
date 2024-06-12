@@ -25,6 +25,9 @@ app.get('/api/products', (req, res) => {
 
 app.post('/api/products', (req, res) => {
     const { name, category, quantity } = req.body;
+    if (!name || !category || !quantity) {
+        return res.status(400).json({ error: "Please provide name, category, and quantity for the product." });
+    }
     const newProduct = {
         id: products.length + 1,
         name,
@@ -41,6 +44,9 @@ app.get('/api/shipments', (req, res) => {
 
 app.post('/api/shipments', (req, res) => {
     const { product_id, quantity, destination } = req.body;
+    if (!product_id || !quantity || !destination) {
+        return res.status(400).json({ error: "Please provide product_id, quantity, and destination for the shipment." });
+    }
     const newShipment = {
         id: shipments.length + 1,
         product_id,
@@ -53,7 +59,13 @@ app.post('/api/shipments', (req, res) => {
 
 app.post('/api/batch/products', (req, res) => {
     const productsToAdd = req.body.products;
+    if (!productsToAdd || !productsToAdd.length) {
+        return res.status(400).json({ error: "Please provide an array of products." });
+    }
     productsToAdd.forEach(product => {
+        if (!product.name || !product.category || !product.quantity) {
+            return; // This silently ignores invalid products; consider adding more robust error handling
+        }
         const newProduct = {
             id: products.length + 1,
             name: product.name,
@@ -67,7 +79,13 @@ app.post('/api/batch/products', (req, res) => {
 
 app.post('/api/batch/shipments', (req, res) => {
     const shipmentsToAdd = req.body.shipments;
+    if (!shipmentsToAdd || !shipmentsToAdd.length) {
+        return res.status(400).json({ error: "Please provide an array of shipments." });
+    }
     shipmentsToAdd.forEach(shipment => {
+        if (!shipment.product_id || !shipment.quantity || !shipment.destination) {
+            return; // This silently ignores invalid shipments; consider adding more robust error handling
+        }
         const newShipment = {
             id: shipments.length + 1,
             product_id: shipment.product_id,
@@ -81,6 +99,11 @@ app.post('/api/batch/shipments', (req, res) => {
 
 app.use((req, res, next) => {
     res.status(404).send('Endpoint not found!');
+});
+
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send('Something broke!');
 });
 
 app.listen(PORT, () => {
