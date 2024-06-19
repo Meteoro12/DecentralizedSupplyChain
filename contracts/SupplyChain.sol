@@ -1,45 +1,46 @@
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 contract DecentralizedSupplyChain {
     struct Product {
         uint id;
         string name;
-        string originLocation;
-        address owner;
-        bool shippedStatus;
+        string origin;
+        address currentOwner;
+        bool isShipped;
     }
 
-    mapping(uint => Product) public productRegister;
-    uint public totalProducts;
+    mapping(uint => Product) public products;
+    uint public productCount;
 
-    event ProductRegistered(uint productId, string name, string originLocation, address indexed owner);
-    event ShipmentStatusUpdated(uint productId, bool shippedStatus);
-    event OwnershipTransferred(uint productId, address indexed newOwner);
+    event ProductAdded(uint productId, string productName, string productOrigin, address indexed owner);
+    event ShippingStatusUpdated(uint productId, bool isShipped);
+    event OwnerUpdated(uint productId, address indexed newOwner);
 
-    modifier isProductOwner(uint productId) {
-        require(msg.sender == productRegister[productId].owner, "Caller is not the product owner");
+    modifier onlyProductOwner(uint productId) {
+        require(msg.sender == products[productId].currentOwner, "Caller is not the product owner");
         _;
     }
 
-    function registerProduct(string memory productName, string memory originLocation) public {
-        totalProducts++;
-        productRegister[totalProducts] = Product(totalProducts, productName, originLocation, msg.sender, false);
-        emit ProductRegistered(totalProducts, productName, originLocation, msg.sender);
+    function addProduct(string memory name, string memory origin) public {
+        productCount++;
+        products[productCount] = Product(productCount, name, origin, msg.sender, false);
+        emit ProductAdded(productCount, name, origin, msg.sender);
     }
 
-    function updateProductShipment(uint productId, bool newShippedStatus) public isProductOwner(productId) {
-        Product storage product = productRegister[productId];
-        product.shippedStatus = newShippedStatus;
-        emit ShipmentStatusUpdated(productId, newShippedStatus);
+    function setShippingStatus(uint productId, bool shipped) public onlyProductOwner(productId) {
+        Product storage product = products[productId];
+        product.isShipped = shipped;
+        emit ShippingStatusUpdated(productId, shipped);
     }
 
-    function confirmProductOrigin(uint productId, string memory originToVerify) public view returns(bool) {
-        return keccak256(abi.encodePacked(productRegister[productId].originLocation)) == keccak256(abi.encodePacked(originToVerify));
+    function verifyProductOrigin(uint productId, string memory originVerification) public view returns(bool) {
+        return keccak256(abi.encodePacked(products[productId].origin)) == keccak256(abi.encodePacked(originVerification));
     }
 
-    function changeProductOwner(uint productId, address newOwner) public isProductOwner(productId) {
-        Product storage product = productRegister[productId];
-        product.owner = newOwner;
-        emit OwnershipTransferred(productId, newOwner);
+    function updateOwner(uint productId, address newOwner) public onlyProductOwner(productId) {
+        Product storage product = products[productId];
+        product.currentOwner = newOwner;
+        emit OwnerUpdated(productId, newOwner);
     }
 }
