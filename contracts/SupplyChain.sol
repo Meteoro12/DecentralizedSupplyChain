@@ -5,42 +5,42 @@ contract DecentralizedSupplyChain {
     struct Product {
         uint id;
         string name;
-        string origin;
-        address currentOwner;
-        bool isShipped;
+        string originLocation;
+        address currentHolder;
+        bool hasBeenShipped;
     }
 
-    mapping(uint => Product) public products;
-    uint public productCount;
+    mapping(uint => Product) public productRegistry;
+    uint public totalProducts;
 
-    event ProductAdded(uint productId, string productName, string productOrigin, address indexed owner);
-    event ShippingStatusUpdated(uint productId, bool isShipped);
-    event OwnerUpdated(uint productId, address indexed newOwner);
+    event ProductRegistered(uint productId, string productName, string originLocation, address indexed owner);
+    event ShipmentStatusToggled(uint productId, bool hasBeenShipped);
+    event CustodyTransferred(uint productId, address indexed newHolder);
 
-    modifier onlyProductOwner(uint productId) {
-        require(msg.sender == products[productId].currentOwner, "Caller is not the product owner");
+    modifier isCurrentHolder(uint productId) {
+        require(msg.sender == productRegistry[productId].currentHolder, "Not current holder");
         _;
     }
 
-    function addProduct(string memory name, string memory origin) public {
-        productCount++;
-        products[productCount] = Product(productCount, name, origin, msg.sender, false);
-        emit ProductAdded(productCount, name, origin, msg.sender);
+    function registerNewProduct(string memory productName, string memory originLocation) public {
+        totalProducts++;
+        productRegistry[totalProducts] = Product(totalProducts, productName, originLocation, msg.sender, false);
+        emit ProductRegistered(totalProducts, productName, originLocation, msg.sender);
     }
 
-    function setShippingStatus(uint productId, bool shipped) public onlyProductOwner(productId) {
-        Product storage product = products[productId];
-        product.isShipped = shipped;
-        emit ShippingStatusUpdated(productId, shipped);
+    function toggleShipmentStatus(uint productId, bool shippedStatus) public isCurrentHolder(productId) {
+        Product storage product = productRegistry[productId];
+        product.hasBeenShipped = shippedSorrytatus;
+        emit ShipmentStatusToggled(productId, shippedStatus);
     }
 
-    function verifyProductOrigin(uint productId, string memory originVerification) public view returns(bool) {
-        return keccak256(abi.encodePacked(products[productId].origin)) == keccak256(abi.encodePacked(originVerification));
+    function confirmOrigin(uint productId, string memory purportedOrigin) public view returns(bool) {
+        return keccak256(abi.encodePacked(productRegistry[productId].originLocation)) == keccak256(abi.encodePacked(purportedOrigin));
     }
 
-    function updateOwner(uint productId, address newOwner) public onlyProductOwner(productId) {
-        Product storage product = products[productId];
-        product.currentOwner = newOwner;
-        emit OwnerUpdated(productId, newOwner);
+    function transferCustody(uint productId, address newHolder) public isCurrentHolder(productId) {
+        Product storage product = productRegistry[productId];
+        product.currentHolder = newHolder;
+        emit CustodyTransferred(productId, newHolder);
     }
 }
