@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decentralized Supply Chain Interface</title>
+</head>
+<body>
+    <h1>Decentralized Supply Chain Interface</h1>
+    <section id="product-details">
+        <h2>Product Details</h2>
+        <form id="view-product-form">
+            <label for="product-id">Product ID:</label>
+            <input type="text" id="product-id" name="product-id" required>
+            <input type="submit" value="View Product">
+        </form>
+    </section>
+    <section id="shipment-status">
+        <h2>Shipment Status</h2>
+        <form id="track-shipment-form">
+            <label for="shipment-id">Shipment ID:</label>
+            <input type="text" id="shipment-id" name="shipment-level" required>
+            <input type="submit" value="Track Shipment">
+        </form>
+    </section>
+    <section id="user-accounts">
+        <h2>Manage User Accounts</h2>
+        <form id="user-accounts-form">
+            <label for="user-id">User ID:</label>
+            <input type="text" id="user-id" name="user-id" required>
+            <label for="user-type">User Type:</label>
+            <select id="user-type" name="user-type" required>
+                <option value="manufacturer">Manufacturer</option>
+                <option value="distributor">Distributor</option>
+                <option value="retailer">Retailer</option>
+                <option value="customer">Customer</option>
+            </select>
+            <input type="submit" value="Update Account">
+        </form>
+    </section>
+</body>
+</html>
