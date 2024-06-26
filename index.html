@@ -13,16 +13,22 @@
             <label for="product-id">Product ID:</label>
             <input type="text" id="product-id" name="product-id" required>
             <input type="submit" value="View Product">
+            <!-- New button added below -->
+            <button type="button" onclick="additionalProductFunction()">Additional Product Action</button>
         </form>
     </section>
+
     <section id="shipment-status">
         <h2>Shipment Status</h2>
         <form id="track-shipment-form">
             <label for="shipment-id">Shipment ID:</label>
-            <input type="text" id="shipment-id" name="shipment-level" required>
+            <input type="text" id="shipment-id" name="shipment-id" required>
             <input type="submit" value="Track Shipment">
+            <!-- New button added below -->
+            <button type="button" onclick="additionalShipmentFunction()">Additional Shipment Action</button>
         </form>
     </section>
+
     <section id="user-accounts">
         <h2>Manage User Accounts</h2>
         <form id="user-accounts-form">
@@ -36,7 +42,27 @@
                 <option value="customer">Customer</option>
             </select>
             <input type="submit" value="Update Account">
+            <!-- New button added below -->
+            <button type="button" onclick="additionalAccountFunction()">Additional Account Action</button>
         </form>
     </section>
+
+    <script>
+        // Example JavaScript functions for the new actions, these need to be defined according to your project's requirement
+        function additionalProductFunction() {
+            console.log("Additional product action executed.");
+            // Define additional actions here
+        }
+
+        function additionalShipmentFunction() {
+            console.log("Additional shipment action executed.");
+            // Define additional actions here
+        }
+
+        function additionalAccountFunction() {
+         console.log("Additional account action executed.");
+            // Define additional actions here
+        }
+    </script>
 </body>
 </html>
